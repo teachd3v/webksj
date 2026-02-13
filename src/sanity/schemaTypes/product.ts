@@ -28,5 +28,12 @@ export default defineType({
             title: 'Link WhatsApp Penjual',
             type: 'url',
         }),
+        defineField({
+            name: 'isBestSeller',
+            title: 'Best Seller',
+            type: 'boolean',
+            description: 'Tandai produk ini sebagai best seller (tampil di beranda)',
+            initialValue: false,
+        }),
     ],
 });

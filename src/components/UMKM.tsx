@@ -1,11 +1,12 @@
 
 import { sanityFetch } from '@/sanity/lib/fetch';
-import { PRODUCTS_QUERY } from '@/sanity/lib/queries';
+import { BEST_SELLER_PRODUCTS_QUERY } from '@/sanity/lib/queries';
 import type { Product } from '@/data/mockData';
 import UMKMClient from './UMKMClient';
+import Link from 'next/link';
 
 export default async function UMKM() {
-    const products = await sanityFetch<Product[]>({ query: PRODUCTS_QUERY });
+    const products = await sanityFetch<Product[]>({ query: BEST_SELLER_PRODUCTS_QUERY });
 
     return (
         <section id="umkm" className="py-24 bg-neutral-900 border-t border-white/5 relative">
@@ -18,6 +19,16 @@ export default async function UMKM() {
                 </div>
 
                 <UMKMClient products={products || []} />
+
+                <div className="text-center mt-12">
+                    <Link
+                        href="/produk"
+                        className="inline-flex items-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-full font-bold text-lg shadow-lg shadow-amber-500/20 transition-all group"
+                    >
+                        <span>Lihat Semua Produk</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </Link>
+                </div>
             </div>
         </section>
     );

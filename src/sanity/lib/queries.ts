@@ -46,7 +46,17 @@ export const PRODUCTS_QUERY = groq`*[_type == "product"]{
   name,
   price,
   "image": image.asset->url,
-  whatsappLink
+  whatsappLink,
+  isBestSeller
+}`;
+
+export const BEST_SELLER_PRODUCTS_QUERY = groq`*[_type == "product" && isBestSeller == true]{
+  _id,
+  name,
+  price,
+  "image": image.asset->url,
+  whatsappLink,
+  isBestSeller
 }`;
 
 export const GALLERY_QUERY = groq`*[_type == "gallery"]{

@@ -42,6 +42,7 @@ export interface Product {
     price: string;
     image?: string;
     whatsappLink?: string;
+    isBestSeller?: boolean;
 }
 
 export interface GalleryItem {

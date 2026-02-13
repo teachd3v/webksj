@@ -40,9 +40,11 @@ export default function UMKMClient({ products }: UMKMClientProps) {
                             </a>
                         </div>
 
-                        <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-xs font-medium text-white flex items-center gap-1">
-                            <Star size={10} className="text-amber-400" fill="currentColor" /> Best Seller
-                        </div>
+                        {product.isBestSeller && (
+                            <div className="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2 py-1 rounded-md text-xs font-medium text-white flex items-center gap-1">
+                                <Star size={10} className="text-amber-400" fill="currentColor" /> Best Seller
+                            </div>
+                        )}
                     </div>
 
                     <div className="p-5">

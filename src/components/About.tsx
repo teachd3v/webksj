@@ -30,7 +30,7 @@ export default function About() {
 
                         <div className="space-y-6 text-lg text-gray-400 font-light leading-relaxed">
                             <p>
-                                Hadir sejak 2008, <strong className="text-white">Kampung Silat Jampang</strong> mendedikasikan diri sebagai pusat silaturahmi pencak silat di Jabodetabek. Saat ini, keluarga besar kami meliputi 32 perguruan dengan total 7.700 siswa aktif dan 90 kolat latihan.
+                                Hadir sejak 2008, <strong className="text-white">Kampung Silat Jampang</strong> mendedikasikan diri sebagai pusat silaturahmi pencak silat di Jabodetabek. Saat ini, keluarga besar kami meliputi 62 perguruan dengan total 5.040 siswa aktif dan 25 aliran silat.
                             </p>
                             <p>
                                 Bersama, kami berkomitmen merawat tradisi dan mencetak generasi tangguh.
