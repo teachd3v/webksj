@@ -8,6 +8,7 @@ export const navLinks = [
     { name: 'Berita', href: '/#berita-section' },
     { name: 'UMKM', href: '/#umkm' },
     { name: 'Galeri', href: '/#gallery' },
+    { name: 'Video', href: '/#video' },
 ];
 
 export const stats = [

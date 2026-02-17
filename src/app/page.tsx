@@ -7,6 +7,7 @@ import Directory from '@/components/Directory';
 import Blog from '@/components/Blog';
 import UMKM from '@/components/UMKM';
 import Gallery from '@/components/Gallery';
+import YoutubeVideos from '@/components/YoutubeVideos';
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -20,6 +21,7 @@ export default function Home() {
       <Blog />
       <UMKM />
       <Gallery />
+      <YoutubeVideos />
       <Footer />
     </main>
   );
