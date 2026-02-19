@@ -61,7 +61,7 @@ export default function Footer() {
                                 <div className="bg-neutral-900 p-3 rounded-lg group-hover:bg-amber-600/20 transition-colors">
                                     <Phone className="text-amber-500 shrink-0" size={20} />
                                 </div>
-                                <span>+62 812-3456-7890</span>
+                                <span>+62 812-1490-0022</span>
                             </li>
                         </ul>
                     </div>
