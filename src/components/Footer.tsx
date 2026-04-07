@@ -2,6 +2,7 @@
 'use client';
 
 import { Facebook, Instagram, Twitter, MapPin, Phone, ArrowUp } from 'lucide-react';
+import Image from 'next/image';
 
 export default function Footer() {
     const scrollToTop = () => {
@@ -19,7 +20,10 @@ export default function Footer() {
                 <div className="grid md:grid-cols-4 gap-12 mb-20">
                     {/* Brand */}
                     <div className="col-span-1 md:col-span-2 space-y-8">
-                        <h2 className="text-4xl font-extrabold tracking-tighter font-display">KSJ<span className="text-amber-600">.</span></h2>
+                        <div className="flex items-center space-x-2">
+                            <Image src="/images/logo-DDGEN.webp" alt="KSJ Logo" width={250} height={100} />
+
+                        </div>
                         <p className="text-gray-400 max-w-sm leading-relaxed text-lg">
                             Melestarikan budaya, memberdayakan ekonomi, dan membangun karakter generasi muda melalui silat.
                         </p>
