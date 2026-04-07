@@ -21,7 +21,7 @@ export default function Footer() {
                     {/* Brand */}
                     <div className="col-span-1 md:col-span-2 space-y-8">
                         <div className="flex items-center space-x-2">
-                            <img src="/images/logo-DDGEN.webp" alt="KSJ Logo" style={{ height: '250px', width: 'auto' }} />
+                            <img src="/images/logo-DDGEN.webp" alt="KSJ Logo" style={{ height: '100px', width: 'auto' }} />
 
                         </div>
                         <p className="text-gray-400 max-w-sm leading-relaxed text-lg">
