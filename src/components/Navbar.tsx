@@ -47,9 +47,9 @@ export default function Navbar() {
                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
                         </Link>
                     ))}
-                    <a href="#join" className="px-6 py-2 bg-gradient-to-r from-amber-600 to-orange-600 rounded-full text-sm font-bold shadow-lg shadow-amber-900/20 hover:shadow-amber-600/40 hover:scale-105 transition-all duration-300">
-                        GABUNG
-                    </a>
+                    <Link href="/kolaborasi" className="px-6 py-2 bg-linear-to-r from-amber-600 to-orange-600 rounded-full text-sm font-bold shadow-lg shadow-amber-900/20 hover:shadow-amber-600/40 hover:scale-105 transition-all duration-300">
+                        KOLABORASI
+                    </Link>
                 </div>
 
                 {/* Mobile Toggle */}

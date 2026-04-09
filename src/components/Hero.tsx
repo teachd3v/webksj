@@ -1,11 +1,6 @@
-
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { SETTINGS_QUERY } from '@/sanity/lib/queries';
 import HeroClient from './HeroClient';
 
-export default async function Hero() {
-    const settings = await sanityFetch<{heroTagline?: string; heroDescription?: string} | null>({ query: SETTINGS_QUERY });
-
+export default function Hero() {
     return (
         <section id="home" className="relative h-screen w-full overflow-hidden flex items-center justify-center">
             {/* Video Background */}
@@ -22,7 +17,7 @@ export default async function Hero() {
                 </video>
             </div>
 
-            <HeroClient settings={settings} />
+            <HeroClient settings={null} />
         </section>
     );
 }

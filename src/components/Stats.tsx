@@ -1,20 +1,12 @@
-
-import { sanityFetch } from '@/sanity/lib/fetch';
-import { STATS_SETTINGS_QUERY } from '@/sanity/lib/queries';
-import { stats as mockStats } from '@/data/mockData';
 import StatsClient from './StatsClient';
 
-export default async function Stats() {
-    const statsSettings = await sanityFetch<{totalPerguruan: number; totalAliran: number; totalAnggota: number} | null>({ query: STATS_SETTINGS_QUERY });
+const stats = [
+    { label: 'Total Perguruan', value: 62 },
+    { label: 'Total Aliran', value: 25 },
+    { label: 'Total Anggota', value: 5040 },
+];
 
-    // Use Sanity data if available, otherwise fallback to mock data
-    const stats = statsSettings
-        ? [
-            { label: 'Total Perguruan', value: statsSettings.totalPerguruan },
-            { label: 'Total Aliran', value: statsSettings.totalAliran },
-            { label: 'Total Anggota', value: statsSettings.totalAnggota },
-        ]
-        : mockStats;
+export default function Stats() {
 
     return (
         <section className="py-12 bg-neutral-950 relative -mt-10 z-20">

@@ -17,26 +17,6 @@ export default defineConfig({
                 S.list()
                     .title('KSJ')
                     .items([
-                        // Singleton: Site Settings
-                        S.listItem()
-                            .title('Site Settings')
-                            .id('siteSettings')
-                            .child(
-                                S.document()
-                                    .schemaType('siteSettings')
-                                    .documentId('siteSettings')
-                                    .title('Site Settings')
-                            ),
-                        // Singleton: Stats Settings
-                        S.listItem()
-                            .title('Stats Settings')
-                            .id('statsSettings')
-                            .child(
-                                S.document()
-                                    .schemaType('statsSettings')
-                                    .documentId('statsSettings')
-                                    .title('Stats Settings')
-                            ),
                         // Singleton: Struktur Organisasi
                         S.listItem()
                             .title('Struktur Organisasi')
@@ -50,7 +30,7 @@ export default defineConfig({
                         S.divider(),
                         // Filter out singletons from the main list
                         ...S.documentTypeListItems().filter(
-                            (listItem) => !['siteSettings', 'statsSettings', 'organisasi', 'media.tag'].includes(listItem.getId() || '')
+                            (listItem) => !['organisasi', 'media.tag'].includes(listItem.getId() || '')
                         ),
                     ]),
         }),
@@ -59,7 +39,7 @@ export default defineConfig({
     document: {
         // Handle singleton actions safely
         actions: (prev, context) => {
-            const singletonTypes = ['siteSettings', 'statsSettings', 'organisasi'];
+            const singletonTypes = ['organisasi'];
             if (singletonTypes.includes(context.schemaType)) {
                 return prev.filter(({ action }) =>
                     action === 'publish' || action === 'discardChanges' || action === 'restore'

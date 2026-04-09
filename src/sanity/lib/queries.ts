@@ -65,17 +65,6 @@ export const GALLERY_QUERY = groq`*[_type == "gallery"]{
   "image": image.asset->url
 }`;
 
-export const STATS_SETTINGS_QUERY = groq`*[_type == "statsSettings"][0]{
-  totalPerguruan,
-  totalAliran,
-  totalAnggota
-}`;
-
-export const SETTINGS_QUERY = groq`*[_type == "siteSettings"][0]{
-  heroTagline,
-  heroDescription
-}`;
-
 export const ORGANISASI_QUERY = groq`*[_type == "organisasi"][0]{
   title,
   pengurusInti[]{
