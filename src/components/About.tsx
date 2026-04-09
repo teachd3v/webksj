@@ -30,10 +30,15 @@ export default function About() {
 
                         <div className="space-y-6 text-lg text-gray-400 font-light leading-relaxed">
                             <p>
-                                Hadir sejak 2008, <strong className="text-white">Kampung Silat Jampang</strong> mendedikasikan diri sebagai pusat silaturahmi pencak silat di Jabodetabek. Saat ini, keluarga besar kami meliputi 59 perguruan dengan total 5.040 siswa aktif dan 25 aliran silat.
+
+                                Sejak 2008, <strong className="text-white">Kampung Silat Jampang</strong> telah menjadi rumah bagi 59 perguruan, 25 aliran, dan 5.040 siswa aktif di Jabodetabek. Bukan sekadar tempat berlatih, <strong className="text-white">KSJ</strong> adalah wujud nyata komitmen GREAT Edunesia (Pilar Pendidikan Dompet Dhuafa) dalam membangun karakter bangsa.
+
                             </p>
+
                             <p>
-                                Bersama, kami berkomitmen merawat tradisi dan mencetak generasi tangguh.
+
+                                Bersama, kami mentransformasi warisan leluhur menjadi sarana pendidikan yang mencetak generasi bermental jawara.
+
                             </p>
                         </div>
 

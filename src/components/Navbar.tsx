@@ -32,8 +32,7 @@ export default function Navbar() {
         >
             <div className="container mx-auto px-6 flex justify-between items-center text-white">
                 <Link href="/" className="flex items-center gap-2 text-3xl font-extrabold tracking-tighter hover:text-amber-500 transition-colors duration-300 font-display">
-                    <Image src="/images/logo.png" alt="KSJ Logo" width={40} height={40} className="object-contain" />
-                    <span>KSJ<span className="text-amber-500">.</span></span>
+                    <Image src="/images/logo.png" alt="KSJ Logo" width={100} height={150} className="object-contain" />
                 </Link>
 
                 {/* Desktop Menu */}
