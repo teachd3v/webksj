@@ -1,10 +1,5 @@
-
-'use client';
-
 import { motion } from 'framer-motion';
 import { Calendar } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
 import type { NewsItem } from '@/data/mockData';
 
 interface BlogClientProps {
@@ -25,7 +20,7 @@ export default function BlogClient({ news }: BlogClientProps) {
                 >
                     <div className="h-64 rounded-2xl overflow-hidden relative mb-6 bg-neutral-900 flex items-center justify-center">
                         {item.image ? (
-                            <Image src={item.image} alt={item.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                            <img src={item.image} alt={item.title} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110" loading="lazy" />
                         ) : (
                             <span className="text-neutral-700 font-bold">No Image</span>
                         )}
@@ -42,12 +37,12 @@ export default function BlogClient({ news }: BlogClientProps) {
                         <p className="text-gray-400 mb-6 line-clamp-3 leading-relaxed flex-1">
                             {item.excerpt}
                         </p>
-                        <Link
+                        <a
                             href={item.slug ? `/berita/${item.slug}` : '#'}
                             className="text-sm font-bold text-white uppercase tracking-widest border-b border-white/30 pb-1 self-start hover:border-amber-500 hover:text-amber-500 transition-all text-center"
                         >
                             Baca Selengkapnya
-                        </Link>
+                        </a>
                     </div>
                 </motion.div>
             )) : (

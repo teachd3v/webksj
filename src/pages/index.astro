@@ -1,0 +1,123 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Navbar from '@/components/Navbar';
+import Hero from '@/components/Hero';
+import About from '@/components/About';
+import Stats from '@/components/Stats';
+import Directory from '@/components/Directory';
+import BlogClient from '@/components/BlogClient';
+import UMKMClient from '@/components/UMKMClient';
+import GalleryClient from '@/components/GalleryClient';
+import YoutubeVideosClient from '@/components/YoutubeVideosClient';
+import Footer from '@/components/Footer';
+import { getDb, getAllNews, getAllProducts, getAllGallery, getYoutubeApiKey } from '@/lib/db';
+import { fetchLatestVideos } from '@/lib/youtube';
+import { ArrowRight } from 'lucide-react';
+
+const db = getDb(Astro.locals);
+const [latestNews, bestSellerProducts, galleryItems, videos] = await Promise.all([
+    getAllNews(db, 3),
+    getAllProducts(db, true),
+    getAllGallery(db),
+    fetchLatestVideos(3, getYoutubeApiKey()),
+]);
+---
+
+<Layout
+    title="Kampung Silat Jampang (KSJ) | Pusat Pengembangan Seni Bela Diri Silat Nusantara"
+    description="Kampung Silat Jampang (KSJ) menaungi 59+ perguruan pencak silat tradisional (Cimande, Beksi, Sera, Syahbandar) di Kawasan Zona Madina, Bogor. Pusat edukasi, budaya, dan prestasi silat nusantara."
+    keywords="Kampung Silat Jampang, KSJ, Pencak Silat Indonesia, Perguruan Silat Bogor, Cimande, Beksi, Sera, Pelatihan Silat Tradisional, Zona Madina Dompet Dhuafa"
+>
+    <main class="min-h-screen bg-neutral-950 text-neutral-50 overflow-x-hidden">
+        <Navbar client:load />
+        <Hero client:load />
+        <About client:visible />
+        <Stats client:visible />
+        <Directory />
+
+        <!-- Berita & Kegiatan -->
+        <section id="berita-section" class="py-24 bg-neutral-950">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/10 pb-8">
+                    <div class="max-w-xl">
+                        <span class="text-amber-500 font-bold tracking-widest uppercase text-sm mb-2 block">Kabar Padepokan</span>
+                        <h2 class="text-3xl md:text-5xl font-bold text-white font-display">Berita & Kegiatan</h2>
+                    </div>
+                    <a href="/berita" class="group flex items-center gap-2 text-white hover:text-amber-500 transition-colors mt-6 md:mt-0 font-medium">
+                        Lihat Semua Berita
+                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </a>
+                </div>
+
+                <BlogClient client:visible news={latestNews} />
+            </div>
+        </section>
+
+        <!-- UMKM -->
+        <section id="umkm" class="py-24 bg-neutral-900 border-t border-white/5 relative">
+            <div class="absolute top-0 inset-x-0 h-px bg-gradient-to-r from-transparent via-amber-500/50 to-transparent"></div>
+
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-16">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4 font-display text-white">Karya <span class="text-amber-500">Komunitas</span></h2>
+                    <p class="mt-4 text-gray-400">Produk lokal berkualitas dari tangan-tangan terampil warga KSJ.</p>
+                </div>
+
+                <UMKMClient client:visible products={bestSellerProducts} />
+
+                <div class="text-center mt-12">
+                    <a
+                        href="/produk"
+                        class="inline-flex items-center gap-2 px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-full font-bold text-lg shadow-lg shadow-amber-500/20 transition-all group"
+                    >
+                        <span>Lihat Semua Produk</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="group-hover:translate-x-1 transition-transform"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galeri -->
+        <section id="gallery" class="py-24 bg-black relative">
+            <div class="container mx-auto px-6">
+                <div class="flex justify-between items-end mb-12 px-4">
+                    <div>
+                        <h2 class="text-4xl md:text-6xl font-black text-white font-display uppercase tracking-tighter">
+                            Galeri <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-red-600">Aksi</span>
+                        </h2>
+                    </div>
+                    <div class="hidden md:block w-32 h-1 bg-white/10 rounded-full mb-4"></div>
+                </div>
+
+                <GalleryClient client:visible items={galleryItems} />
+            </div>
+        </section>
+
+        <!-- YouTube Videos -->
+        <section id="video" class="py-24 bg-neutral-950">
+            <div class="container mx-auto px-6">
+                <div class="flex flex-col md:flex-row justify-between items-end mb-12 border-b border-white/10 pb-8">
+                    <div class="max-w-xl">
+                        <span class="text-amber-500 font-bold tracking-widest uppercase text-sm mb-2 block">Channel YouTube</span>
+                        <h2 class="text-3xl md:text-5xl font-bold text-white font-display">
+                            Video <span class="text-transparent bg-clip-text bg-gradient-to-r from-amber-500 to-red-600">Terbaru</span>
+                        </h2>
+                    </div>
+                    <a
+                        href="https://www.youtube.com/@kampungsilatjampang"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        class="group flex items-center gap-2 text-white hover:text-amber-500 transition-colors mt-6 md:mt-0 font-medium"
+                    >
+                        Lihat Semua Video
+                        <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+                    </a>
+                </div>
+
+                <YoutubeVideosClient client:visible videos={videos} />
+            </div>
+        </section>
+
+        <Footer client:visible />
+    </main>
+</Layout>

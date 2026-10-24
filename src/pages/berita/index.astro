@@ -1,0 +1,47 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import BlogClient from '@/components/BlogClient';
+import { getDb, getAllNews } from '@/lib/db';
+import { ArrowLeft } from 'lucide-react';
+
+const db = getDb(Astro.locals);
+const news = await getAllNews(db);
+---
+
+<Layout
+    title="Berita & Kegiatan Silat Nusantara | Kampung Silat Jampang"
+    description="Kumpulan berita terbaru, festival seni bela diri, kejuaraan, dan agenda kegiatan Kampung Silat Jampang (KSJ)."
+    keywords="Berita Kampung Silat Jampang, Kegiatan Silat Bogor, Festival Pencak Silat, Agenda KSJ"
+>
+    <main class="min-h-screen bg-neutral-950 text-white">
+        <Navbar client:load />
+
+        <div class="pt-32 pb-20">
+            <div class="container mx-auto px-6">
+                <a
+                    href="/#berita-section"
+                    class="inline-flex items-center gap-2 text-amber-500 hover:text-amber-400 transition-colors mb-12 group"
+                >
+                    <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                    Kembali ke Beranda
+                </a>
+
+                <div class="mb-20">
+                    <span class="text-amber-500 font-bold tracking-[0.3em] uppercase text-sm mb-4 block">Arsip Lengkap</span>
+                    <h1 class="text-4xl md:text-7xl font-bold font-display tracking-tight mb-6">
+                        Berita & <span class="text-amber-500">Kegiatan.</span>
+                    </h1>
+                    <p class="text-gray-400 text-lg max-w-2xl leading-relaxed">
+                        Kumpulan informasi terbaru, agenda kegiatan, dan catatan perjalanan Kampung Silat Jampang dalam melestarikan budaya Nusantara.
+                    </p>
+                </div>
+
+                <BlogClient client:load news={news} />
+            </div>
+        </div>
+
+        <Footer client:visible />
+    </main>
+</Layout>

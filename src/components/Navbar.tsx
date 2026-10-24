@@ -1,9 +1,4 @@
-
-'use client';
-
 import { useState, useEffect } from 'react';
-import Link from 'next/link';
-import Image from 'next/image';
 import { Menu, X } from 'lucide-react';
 import { navLinks } from '@/data/mockData';
 import { cn } from '@/lib/utils';
@@ -25,31 +20,41 @@ export default function Navbar() {
         <nav
             className={cn(
                 'fixed top-0 left-0 w-full z-50 transition-all duration-500',
-                scrolled
-                    ? 'glass-dark py-3'
-                    : 'bg-transparent py-6'
+                scrolled ? 'glass-dark py-3' : 'bg-transparent py-6'
             )}
         >
             <div className="container mx-auto px-6 flex justify-between items-center text-white">
-                <Link href="/" className="flex items-center gap-2 text-3xl font-extrabold tracking-tighter hover:text-amber-500 transition-colors duration-300 font-display">
-                    <Image src="/images/logo.png" alt="KSJ Logo" width={100} height={150} className="object-contain" />
-                </Link>
+                <a
+                    href="/"
+                    className="flex items-center gap-2 text-3xl font-extrabold tracking-tighter hover:text-amber-500 transition-colors duration-300 font-display"
+                >
+                    <img
+                        src="/images/logo.png"
+                        alt="KSJ Logo"
+                        width={100}
+                        height={150}
+                        className="object-contain"
+                    />
+                </a>
 
                 {/* Desktop Menu */}
                 <div className="hidden md:flex items-center space-x-8">
                     {navLinks.map((link) => (
-                        <Link
+                        <a
                             key={link.name}
                             href={link.href}
                             className="text-sm font-medium hover:text-amber-400 transition-colors uppercase tracking-widest relative group"
                         >
                             {link.name}
                             <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-amber-500 transition-all duration-300 group-hover:w-full"></span>
-                        </Link>
+                        </a>
                     ))}
-                    <Link href="/kolaborasi" className="px-6 py-2 bg-linear-to-r from-amber-600 to-orange-600 rounded-full text-sm font-bold shadow-lg shadow-amber-900/20 hover:shadow-amber-600/40 hover:scale-105 transition-all duration-300">
+                    <a
+                        href="/kolaborasi"
+                        className="px-6 py-2 bg-linear-to-r from-amber-600 to-orange-600 rounded-full text-sm font-bold shadow-lg shadow-amber-900/20 hover:shadow-amber-600/40 hover:scale-105 transition-all duration-300"
+                    >
                         KOLABORASI
-                    </Link>
+                    </a>
                 </div>
 
                 {/* Mobile Toggle */}
@@ -72,15 +77,22 @@ export default function Navbar() {
                     >
                         <div className="py-8 flex flex-col items-center space-y-6">
                             {navLinks.map((link) => (
-                                <Link
+                                <a
                                     key={link.name}
                                     href={link.href}
                                     className="text-white hover:text-amber-400 text-xl font-display font-medium tracking-wide"
                                     onClick={() => setIsOpen(false)}
                                 >
                                     {link.name}
-                                </Link>
+                                </a>
                             ))}
+                            <a
+                                href="/kolaborasi"
+                                className="px-6 py-2 bg-linear-to-r from-amber-600 to-orange-600 rounded-full text-sm font-bold text-white"
+                                onClick={() => setIsOpen(false)}
+                            >
+                                KOLABORASI
+                            </a>
                         </div>
                     </motion.div>
                 )}

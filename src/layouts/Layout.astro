@@ -1,0 +1,133 @@
+---
+import '../styles/global.css';
+
+interface Props {
+    title?: string;
+    description?: string;
+    ogImage?: string | null;
+    canonical?: string;
+    type?: 'website' | 'article' | 'profile';
+    keywords?: string;
+    schemaJson?: Record<string, any> | Array<Record<string, any>>;
+    noIndex?: boolean;
+}
+
+const {
+    title = 'Kampung Silat Jampang (KSJ) | Pusat Pengembangan Budaya Silat Nusantara',
+    description = 'Kampung Silat Jampang (KSJ) adalah wadah pelestarian dan pengembangan seni beladiri pencak silat tradisional nusantara yang menaungi 59+ perguruan di Jawa Barat dan sekitarnya.',
+    ogImage,
+    canonical,
+    type = 'website',
+    keywords = 'Kampung Silat Jampang, KSJ, Pencak Silat Indonesia, Perguruan Silat Bogor, Beladiri Tradisional, Cimande, Beksi, Sera, Aliran Silat Betawi, Budaya Nusantara, Wisata Budaya Silat',
+    schemaJson,
+    noIndex = false,
+} = Astro.props;
+
+const siteUrl = 'https://kampungsilatjampang.id';
+const canonicalURL = canonical || new URL(Astro.url.pathname, siteUrl).href;
+
+// Fallback image to logo or banner if ogImage is null/empty
+let resolvedOgImage = 'https://kampungsilatjampang.id/images/logo.png';
+if (ogImage) {
+    resolvedOgImage = ogImage.startsWith('http') ? ogImage : `${siteUrl}${ogImage.startsWith('/') ? '' : '/'}${ogImage}`;
+}
+
+// Default Schema: Organization & WebSite
+const defaultOrganizationSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SportsOrganization',
+    '@id': `${siteUrl}/#organization`,
+    name: 'Kampung Silat Jampang',
+    alternateName: 'KSJ',
+    url: siteUrl,
+    logo: `${siteUrl}/images/logo.png`,
+    image: `${siteUrl}/images/logo.png`,
+    description: 'Pusat Pengembangan dan Pelestarian Budaya Pencak Silat Nusantara di Kawasan Zona Madina Dompet Dhuafa, Parung, Bogor.',
+    address: {
+        '@type': 'PostalAddress',
+        addressLocality: 'Bogor',
+        addressRegion: 'Jawa Barat',
+        addressCountry: 'ID',
+    },
+    contactPoint: {
+        '@type': 'ContactPoint',
+        telephone: '+62-812-1490-0022',
+        contactType: 'customer support',
+        availableLanguage: ['Indonesian'],
+    },
+};
+
+const defaultWebSiteSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'WebSite',
+    '@id': `${siteUrl}/#website`,
+    url: siteUrl,
+    name: 'Kampung Silat Jampang',
+    publisher: {
+        '@id': `${siteUrl}/#organization`,
+    },
+    inLanguage: 'id-ID',
+};
+
+const finalSchemas = schemaJson
+    ? (Array.isArray(schemaJson) ? schemaJson : [schemaJson])
+    : [defaultOrganizationSchema, defaultWebSiteSchema];
+---
+
+<!doctype html>
+<html lang="id" class="scroll-smooth dark">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        
+        <!-- Primary Meta Tags -->
+        <title>{title}</title>
+        <meta name="title" content={title} />
+        <meta name="description" content={description} />
+        <meta name="keywords" content={keywords} />
+        <meta name="author" content="Kampung Silat Jampang" />
+        <link rel="canonical" href={canonicalURL} />
+        <meta name="theme-color" content="#0a0a0a" />
+
+        <!-- Robots Meta -->
+        {noIndex ? (
+            <meta name="robots" content="noindex, nofollow" />
+        ) : (
+            <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1" />
+        )}
+
+        <!-- Open Graph / Facebook / WhatsApp -->
+        <meta property="og:type" content={type} />
+        <meta property="og:site_name" content="Kampung Silat Jampang" />
+        <meta property="og:url" content={canonicalURL} />
+        <meta property="og:title" content={title} />
+        <meta property="og:description" content={description} />
+        <meta property="og:image" content={resolvedOgImage} />
+        <meta property="og:image:alt" content={title} />
+        <meta property="og:locale" content="id_ID" />
+
+        <!-- Twitter Card -->
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:url" content={canonicalURL} />
+        <meta name="twitter:title" content={title} />
+        <meta name="twitter:description" content={description} />
+        <meta name="twitter:image" content={resolvedOgImage} />
+
+        <!-- Google Fonts Preconnect -->
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@500;700;800;900&display=swap"
+            rel="stylesheet"
+        />
+
+        <!-- Schema.org JSON-LD Structured Data for Rich Snippets -->
+        {finalSchemas.map((schema) => (
+            <script type="application/ld+json" set:html={JSON.stringify(schema)} />
+        ))}
+    </head>
+    <body class="antialiased bg-neutral-950 text-neutral-50 min-h-screen">
+        <slot />
+    </body>
+</html>

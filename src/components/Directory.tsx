@@ -1,8 +1,3 @@
-
-
-import Image from 'next/image';
-import Link from 'next/link';
-
 export default function Directory() {
     return (
         <section id="directory" className="py-24 bg-neutral-900 relative overflow-hidden">
@@ -18,18 +13,16 @@ export default function Directory() {
                 </div>
 
                 <div className="flex flex-col items-center justify-center space-y-8">
-                    {/* Fixed aspect ratio container corresponding to 1440x209 (~6.89 ratio) */}
                     <div className="relative w-full max-w-6xl mx-auto aspect-[1440/209] rounded-3xl overflow-hidden shadow-2xl border border-white/10 group">
                         <div className="absolute inset-0 bg-neutral-900/20 group-hover:bg-neutral-900/10 transition-colors duration-500" />
-                        <Image
+                        <img
                             src="/images/62-logo-perguruan.png"
                             alt="Logo Perguruan KSJ"
-                            fill
-                            className="object-cover transform group-hover:scale-105 transition-transform duration-700"
+                            className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-700"
                         />
                     </div>
 
-                    <Link
+                    <a
                         href="/perguruan"
                         className="px-8 py-4 bg-amber-500 hover:bg-amber-600 text-white rounded-full font-bold text-lg shadow-lg shadow-amber-500/20 transition-all flex items-center gap-2 group"
                     >
@@ -51,7 +44,7 @@ export default function Directory() {
                             <path d="M22 21v-2a4 4 0 0 0-3-3.87" />
                             <path d="M16 3.13a4 4 0 0 1 0 7.75" />
                         </svg>
-                    </Link>
+                    </a>
                 </div>
             </div>
         </section>

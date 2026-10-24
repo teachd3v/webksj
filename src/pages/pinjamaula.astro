@@ -1,0 +1,13 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import PinjamAulaClient from '@/components/pinjamaula/PinjamAulaClient';
+---
+
+<Layout
+    title="Peminjaman Aula KSJ — Kampung Silat Jampang"
+    description="Sistem informasi jadwal dan reservasi peminjaman Aula Kampung Silat Jampang (KSJ)."
+>
+    <main class="h-dvh max-h-dvh w-screen overflow-x-hidden overflow-y-auto lg:overflow-hidden bg-neutral-950 text-white">
+        <PinjamAulaClient client:load />
+    </main>
+</Layout>

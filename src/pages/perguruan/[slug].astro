@@ -1,0 +1,160 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import { getDb, getPerguruanBySlug } from '@/lib/db';
+import { MapPin, Users, Phone, ArrowLeft, Trophy, ShieldCheck } from 'lucide-react';
+
+const { slug } = Astro.params;
+const db = getDb(Astro.locals);
+const school = slug ? await getPerguruanBySlug(db, slug) : null;
+
+if (!school) {
+    return Astro.redirect('/perguruan');
+}
+
+const cleanDesc = (school.description || '')
+    .replace(/<[^>]*>?/gm, '')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+const metaDescription = cleanDesc 
+    ? (cleanDesc.length > 155 ? `${cleanDesc.substring(0, 152)}...` : cleanDesc)
+    : `Profil Perguruan Pencak Silat ${school.name} beraliran ${school.style} di Kampung Silat Jampang, ${school.location}. Pelajari sejarah, guru besar, dan jurus tradisinya.`;
+
+const schoolSchema = {
+    '@context': 'https://schema.org',
+    '@type': 'SportsClub',
+    name: school.name,
+    description: metaDescription,
+    image: school.logo ? `https://kampungsilatjampang.id${school.logo}` : 'https://kampungsilatjampang.id/images/logo.png',
+    sport: 'Pencak Silat',
+    address: {
+        '@type': 'PostalAddress',
+        addressLocality: school.location,
+        addressCountry: 'ID',
+    },
+    founder: school.master_name ? {
+        '@type': 'Person',
+        name: school.master_name,
+    } : undefined,
+    telephone: school.contact ? `+${school.contact.replace(/\D/g, '')}` : undefined,
+    url: `https://kampungsilatjampang.id/perguruan/${school.slug}`,
+    memberOf: {
+        '@type': 'SportsOrganization',
+        name: 'Kampung Silat Jampang',
+        url: 'https://kampungsilatjampang.id',
+    },
+};
+---
+
+<Layout
+    title={`${school.name} - Perguruan Silat ${school.style} | KSJ`}
+    description={metaDescription}
+    ogImage={school.logo}
+    type="profile"
+    keywords={`Perguruan ${school.name}, Silat ${school.style}, Guru ${school.master_name || ''}, Silat ${school.location}, Kampung Silat Jampang`}
+    schemaJson={schoolSchema}
+>
+    <main class="min-h-screen bg-neutral-950 text-white">
+        <Navbar client:load />
+
+        <!-- Header Section -->
+        <div class="relative pt-32 pb-20 overflow-hidden">
+            <div class="absolute top-0 inset-x-0 h-96 bg-gradient-to-b from-amber-600/10 to-transparent pointer-events-none" />
+            <div class="absolute top-20 right-0 w-96 h-96 bg-amber-500/5 blur-[120px] pointer-events-none" />
+
+            <div class="container mx-auto px-6 relative z-10">
+                <a
+                    href="/perguruan"
+                    class="inline-flex items-center gap-2 text-amber-500 hover:text-amber-400 transition-colors mb-12 group"
+                >
+                    <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                    Kembali ke Direktori
+                </a>
+
+                <div class="flex flex-col md:flex-row gap-8 md:items-end">
+                    <div class="w-32 h-32 md:w-48 md:h-48 bg-neutral-900 rounded-3xl border border-white/10 p-2 shadow-2xl">
+                        <div class="w-full h-full bg-neutral-800 rounded-2xl flex items-center justify-center text-6xl overflow-hidden relative">
+                            {school.logo ? (
+                                <img src={school.logo} alt={school.name} class="w-full h-full object-cover" />
+                            ) : '🥋'}
+                        </div>
+                    </div>
+
+                    <div class="flex-1">
+                        <span class="inline-block px-3 py-1 bg-amber-500/20 text-amber-500 rounded-full text-sm font-bold tracking-widest uppercase border border-amber-500/20 mb-4">
+                            {school.style}
+                        </span>
+                        <h1 class="text-4xl md:text-7xl font-bold font-display tracking-tight text-white mb-4">
+                            {school.name}
+                        </h1>
+                        <div class="flex flex-wrap gap-6 text-gray-400">
+                            <span class="flex items-center gap-2"><MapPin size={18} className="text-amber-500" /> {school.location}</span>
+                            <span class="flex items-center gap-2"><Users size={18} className="text-amber-500" /> {school.members} Anggota</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Content Section -->
+        <div class="container mx-auto px-6 relative z-10 pb-20">
+            <div class="grid lg:grid-cols-3 gap-16">
+                <div class="lg:col-span-2 space-y-16">
+                    <section>
+                        <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 font-display">
+                            <ShieldCheck className="text-amber-500" /> Profil Perguruan
+                        </h2>
+                        <div class="rich-content text-gray-400 text-lg leading-relaxed">
+                            {school.description ? (
+                                <Fragment set:html={school.description} />
+                            ) : (
+                                <p>Informasi profil sedang diperbarui oleh pengurus perguruan.</p>
+                            )}
+                        </div>
+                    </section>
+
+                    {school.history && (
+                        <section>
+                            <h2 class="text-2xl font-bold mb-6 flex items-center gap-3 font-display">
+                                <Trophy className="text-amber-500" /> Sejarah & Warisan
+                            </h2>
+                            <div class="rich-content text-gray-400 text-lg leading-relaxed">
+                                <Fragment set:html={school.history} />
+                            </div>
+                        </section>
+                    )}
+                </div>
+
+                <aside class="space-y-8">
+                    {school.masterName && (
+                        <div class="bg-neutral-900 border border-white/5 rounded-3xl p-8 sticky top-32">
+                            <h3 class="text-xl font-bold mb-6 font-display border-b border-white/10 pb-4">Dewan Guru</h3>
+                            <div class="flex items-center gap-4 mb-8">
+                                <div class="w-16 h-16 rounded-full bg-amber-500/10 flex items-center justify-center text-3xl">👤</div>
+                                <div>
+                                    <p class="font-bold text-white text-lg">{school.masterName}</p>
+                                    <p class="text-amber-500 text-sm font-medium">Guru Besar</p>
+                                </div>
+                            </div>
+
+                            {school.contact && (
+                                <a
+                                    href={`https://wa.me/${school.contact}`}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    class="flex items-center justify-center gap-3 w-full py-4 bg-white text-black rounded-2xl font-bold uppercase tracking-widest hover:bg-amber-400 transition-all shadow-lg"
+                                >
+                                    <Phone size={20} /> Hubungi Kami
+                                </a>
+                            )}
+                        </div>
+                    )}
+                </aside>
+            </div>
+        </div>
+
+        <Footer client:visible />
+    </main>
+</Layout>

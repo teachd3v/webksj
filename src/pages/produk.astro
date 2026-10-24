@@ -1,0 +1,47 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import Navbar from '@/components/Navbar';
+import Footer from '@/components/Footer';
+import UMKMClient from '@/components/UMKMClient';
+import { getDb, getAllProducts } from '@/lib/db';
+import { ArrowLeft } from 'lucide-react';
+
+const db = getDb(Astro.locals);
+const products = await getAllProducts(db, false);
+---
+
+<Layout
+    title="Katalog Produk & Merchandise Silat UMKM | Kampung Silat Jampang"
+    description="Katalog resmi produk UMKM binaan Kampung Silat Jampang: pakaian seragam silat, merchandise, suvenir, dan produk khas komunitas."
+    keywords="Produk UMKM Silat, Seragam Silat Jampang, Baju Silat, Merchandise KSJ, Minuman Bir Pletok Bogor"
+>
+    <main class="min-h-screen bg-neutral-950 text-white">
+        <Navbar client:load />
+
+        <div class="pt-32 pb-20">
+            <div class="container mx-auto px-6">
+                <a
+                    href="/#umkm"
+                    class="inline-flex items-center gap-2 text-amber-500 hover:text-amber-400 transition-colors mb-12 group"
+                >
+                    <ArrowLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+                    Kembali ke Beranda
+                </a>
+
+                <div class="mb-20">
+                    <span class="text-amber-500 font-bold tracking-[0.3em] uppercase text-sm mb-4 block">Katalog Lengkap</span>
+                    <h1 class="text-4xl md:text-7xl font-bold font-display tracking-tight mb-6">
+                        Produk <span class="text-amber-500">UMKM.</span>
+                    </h1>
+                    <p class="text-gray-400 text-lg max-w-2xl leading-relaxed">
+                        Koleksi lengkap produk lokal berkualitas dari tangan-tangan terampil warga Kampung Silat Jampang.
+                    </p>
+                </div>
+
+                <UMKMClient client:load products={products} />
+            </div>
+        </div>
+
+        <Footer client:visible />
+    </main>
+</Layout>

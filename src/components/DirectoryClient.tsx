@@ -1,11 +1,6 @@
-
-'use client';
-
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, MapPin, Users } from 'lucide-react';
-import Image from 'next/image';
-import Link from 'next/link';
 import type { Perguruan } from '@/data/mockData';
 
 interface DirectoryClientProps {
@@ -28,7 +23,7 @@ export default function DirectoryClient({ schools }: DirectoryClientProps) {
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
-                        transition={{ delay: index * 0.05 }}
+                        transition={{ delay: index * 0.03 }}
                         whileHover={{ y: -5 }}
                         whileTap={{ scale: 0.95 }}
                         onClick={() => setSelectedSchool(school)}
@@ -36,7 +31,7 @@ export default function DirectoryClient({ schools }: DirectoryClientProps) {
                     >
                         <div className="w-20 h-20 bg-neutral-700/50 rounded-full mb-6 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 shadow-inner overflow-hidden relative">
                             {school.logo ? (
-                                <Image src={school.logo} alt={school.name} fill className="object-cover" />
+                                <img src={school.logo} alt={school.name} className="w-full h-full object-cover" loading="lazy" />
                             ) : '🥋'}
                         </div>
                         <h3 className="text-lg font-bold text-white text-center leading-tight group-hover:text-amber-500 transition-colors font-display">
@@ -77,7 +72,7 @@ export default function DirectoryClient({ schools }: DirectoryClientProps) {
                                 <div className="absolute -bottom-12 left-8 w-24 h-24 bg-neutral-900 rounded-2xl p-1 border-4 border-neutral-900">
                                     <div className="w-full h-full bg-neutral-800 rounded-xl flex items-center justify-center text-4xl overflow-hidden relative">
                                         {selectedSchool.logo ? (
-                                            <Image src={selectedSchool.logo} alt={selectedSchool.name} fill className="object-cover" />
+                                            <img src={selectedSchool.logo} alt={selectedSchool.name} className="w-full h-full object-cover" />
                                         ) : '🥋'}
                                     </div>
                                 </div>
@@ -113,18 +108,15 @@ export default function DirectoryClient({ schools }: DirectoryClientProps) {
                                 </div>
 
                                 {selectedSchool.slug ? (
-                                    <Link
+                                    <a
                                         href={`/perguruan/${selectedSchool.slug}`}
                                         className="block w-full py-4 bg-white text-black rounded-xl font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors shadow-lg shadow-white/10 text-center"
                                     >
                                         Lihat Profil Lengkap
-                                    </Link>
+                                    </a>
                                 ) : (
                                     <div className="w-full py-4 bg-neutral-800 text-gray-500 rounded-xl font-bold uppercase tracking-widest text-center cursor-not-allowed border border-white/5">
                                         Profil Belum Tersedia
-                                        <p className="text-[10px] lowercase normal-case font-normal mt-1 text-gray-600">
-                                            (Slug belum digenerate di Sanity)
-                                        </p>
                                     </div>
                                 )}
                             </div>

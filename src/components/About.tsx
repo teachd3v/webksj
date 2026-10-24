@@ -1,8 +1,4 @@
-
-'use client';
-
 import { motion } from 'framer-motion';
-import Link from 'next/link';
 
 export default function About() {
     return (
@@ -30,15 +26,11 @@ export default function About() {
 
                         <div className="space-y-6 text-lg text-gray-400 font-light leading-relaxed">
                             <p>
-
                                 Sejak 2008, <strong className="text-white">Kampung Silat Jampang</strong> telah menjadi rumah bagi 59 perguruan, 25 aliran, dan 5.040 siswa aktif di Jabodetabek. Bukan sekadar tempat berlatih, <strong className="text-white">KSJ</strong> adalah wujud nyata komitmen GREAT Edunesia (Pilar Pendidikan Dompet Dhuafa) dalam membangun karakter bangsa.
-
                             </p>
 
                             <p>
-
                                 Bersama, kami mentransformasi warisan leluhur menjadi sarana pendidikan yang mencetak generasi bermental jawara.
-
                             </p>
                         </div>
 
@@ -61,7 +53,6 @@ export default function About() {
                     >
                         <div className="absolute -inset-4 bg-gradient-to-r from-amber-600 to-orange-600 rounded-2xl opacity-20 blur-2xl"></div>
                         <div className="relative bg-neutral-900 aspect-[4/5] rounded-2xl border border-white/10 overflow-hidden flex flex-col items-center justify-center p-8 text-center group">
-                            {/* Decorative elements */}
                             <div className="absolute top-0 left-0 w-full h-full bg-[radial-gradient(circle_at_top_right,_var(--tw-gradient-stops))] from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-700"></div>
 
                             <div className="w-20 h-20 rounded-full bg-neutral-800 flex items-center justify-center mb-6 border border-neutral-700 shadow-xl z-10">
@@ -70,11 +61,10 @@ export default function About() {
                             <h4 className="text-2xl font-bold font-display text-white z-10">Struktur Pengurus</h4>
                             <p className="text-gray-500 mt-2 z-10">Dewan Guru & Pengelola KSJ</p>
 
-                            <Link href="/organisasi" className="mt-8 px-6 py-2 border border-amber-500/30 text-amber-500 rounded-full hover:bg-amber-500 hover:text-white transition-all text-sm uppercase tracking-wider z-10">
+                            <a href="/organisasi" className="mt-8 px-6 py-2 border border-amber-500/30 text-amber-500 rounded-full hover:bg-amber-500 hover:text-white transition-all text-sm uppercase tracking-wider z-10">
                                 Lihat Bagan Lengkap
-                            </Link>
+                            </a>
                         </div>
-                        {/* Parallax elements could go here */}
                     </motion.div>
                 </div>
             </div>

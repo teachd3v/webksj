@@ -1,0 +1,10 @@
+# https://www.robotstxt.org/robotstxt.html
+User-agent: *
+Allow: /
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api/
+
+# Host & Sitemap
+Host: https://kampungsilatjampang.id
+Sitemap: https://kampungsilatjampang.id/sitemap.xml

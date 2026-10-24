@@ -1,0 +1,13 @@
+---
+import Layout from '@/layouts/Layout.astro';
+import AdminApp from '@/components/admin/AdminApp';
+import { getDb } from '@/lib/db';
+import { verifyAdminSession } from '@/lib/auth';
+
+const db = getDb(Astro.locals);
+const user = await verifyAdminSession(db, Astro.request.headers.get('cookie'));
+---
+
+<Layout title="CMS Admin | Kampung Silat Jampang" noIndex={true}>
+    <AdminApp client:load initialUser={user} />
+</Layout>

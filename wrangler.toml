@@ -1,0 +1,22 @@
+name = "ksj-web"
+account_id = "6dea7431212db790894cca82864822c0"
+compatibility_date = "2025-01-01"
+compatibility_flags = ["nodejs_compat"]
+
+routes = [
+  { pattern = "kampungsilatjampang.id", custom_domain = true },
+  { pattern = "www.kampungsilatjampang.id", custom_domain = true }
+]
+
+[vars]
+YOUTUBE_API_KEY = "AIzaSyBTjuj7mDNz28Vxqaf6eBxFd0h3ku4rEI4"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ksj-db"
+database_id = "c13ac26b-12f6-4870-aee0-699f6bdeb604"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "MEDIA_BUCKET"
+bucket_name = "ksj-media"

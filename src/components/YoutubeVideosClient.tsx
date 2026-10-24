@@ -1,10 +1,6 @@
-
-'use client';
-
 import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Calendar, Play } from 'lucide-react';
-import Image from 'next/image';
 import type { YouTubeVideo } from '@/lib/youtube';
 
 interface YoutubeVideosClientProps {
@@ -58,11 +54,11 @@ export default function YoutubeVideosClient({ videos }: YoutubeVideosClientProps
                                 className="w-full h-full relative cursor-pointer"
                                 aria-label={`Putar video: ${video.title}`}
                             >
-                                <Image
+                                <img
                                     src={video.thumbnail}
                                     alt={video.title}
-                                    fill
-                                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                                    loading="lazy"
                                 />
                                 <div className="absolute inset-0 bg-black/30 group-hover:bg-black/50 transition-colors" />
                                 <div className="absolute inset-0 flex items-center justify-center">

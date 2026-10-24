@@ -1,7 +1,3 @@
-
-'use client';
-
-import Image from 'next/image';
 import { motion } from 'framer-motion';
 import { ShoppingBag, Star } from 'lucide-react';
 import type { Product } from '@/data/mockData';
@@ -24,7 +20,7 @@ export default function UMKMClient({ products }: UMKMClientProps) {
                 >
                     <div className="h-64 bg-neutral-700 relative overflow-hidden flex items-center justify-center">
                         {product.image ? (
-                            <Image src={product.image} alt={product.name} fill className="object-cover transition-transform duration-500 group-hover:scale-110" />
+                            <img src={product.image} alt={product.name} className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110" loading="lazy" />
                         ) : (
                             <span className="text-neutral-500">No Image</span>
                         )}
