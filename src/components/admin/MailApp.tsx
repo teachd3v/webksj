@@ -91,7 +91,7 @@ interface EmailItem {
 }
 
 type FolderType = 'inbox' | 'unread' | 'starred' | 'sent' | 'drafts' | 'trash';
-type QuickFilterType = 'all' | 'unread' | 'starred' | 'replied' | 'has_attachment';
+type QuickFilterType = 'all' | 'starred' | 'replied' | 'has_attachment';
 
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
@@ -727,7 +727,6 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
         if (folder === 'starred' && !item.is_starred) return false;
 
         // Quick Filter Pills
-        if (quickFilter === 'unread' && item.is_read) return false;
         if (quickFilter === 'starred' && !item.is_starred) return false;
         if (quickFilter === 'replied') {
             const hasReplies = (item.replies_count && item.replies_count > 0) || (item.replies && item.replies.length > 0);
@@ -1016,16 +1015,6 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                                 }`}
                             >
                                 Semua
-                            </button>
-                            <button
-                                onClick={() => setQuickFilter('unread')}
-                                className={`px-2.5 py-1 rounded-lg text-[11px] whitespace-nowrap transition-colors ${
-                                    quickFilter === 'unread'
-                                        ? 'bg-amber-500 text-neutral-950 font-bold'
-                                        : 'bg-white/5 text-neutral-400 hover:text-neutral-200'
-                                }`}
-                            >
-                                Belum Dibaca
                             </button>
                             <button
                                 onClick={() => setQuickFilter('starred')}
