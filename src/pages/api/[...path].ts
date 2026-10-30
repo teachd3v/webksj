@@ -454,7 +454,13 @@ app.put('/admin/organisasi', async (c) => {
 app.get('/admin/mail/inbox', async (c) => {
     const db = c.get('db');
     const { results } = await db
-        .prepare('SELECT * FROM inbox_emails ORDER BY received_at DESC')
+        .prepare(`
+            SELECT i.*, 
+                   (SELECT COUNT(*) FROM email_replies r WHERE r.email_id = i.id) as replies_count 
+            FROM inbox_emails i 
+            WHERE COALESCE(i.is_deleted, 0) = 0 
+            ORDER BY i.received_at DESC
+        `)
         .all();
     return c.json({ emails: results || [] });
 });
@@ -493,22 +499,47 @@ app.put('/admin/mail/inbox/:id/toggle-star', async (c) => {
     return c.json({ ok: true });
 });
 
+// Soft Delete Inbox Email
 app.delete('/admin/mail/inbox/:id', async (c) => {
+    const db = c.get('db');
+    const id = c.req.param('id');
+    await db
+        .prepare("UPDATE inbox_emails SET is_deleted = 1, deleted_at = datetime('now') WHERE id = ?")
+        .bind(id)
+        .run();
+    return c.json({ ok: true });
+});
+
+// Restore Inbox Email from Trash
+app.put('/admin/mail/inbox/:id/restore', async (c) => {
+    const db = c.get('db');
+    const id = c.req.param('id');
+    await db
+        .prepare("UPDATE inbox_emails SET is_deleted = 0, deleted_at = NULL WHERE id = ?")
+        .bind(id)
+        .run();
+    return c.json({ ok: true });
+});
+
+// Permanently Delete Inbox Email
+app.delete('/admin/mail/inbox/:id/permanent', async (c) => {
     const db = c.get('db');
     const id = c.req.param('id');
     await db.prepare('DELETE FROM inbox_emails WHERE id = ?').bind(id).run();
     return c.json({ ok: true });
 });
 
-async function sendViaResend(apiKey: string, to: string, subject: string, text: string, attachments?: any[]) {
+async function sendViaResend(apiKey: string, to: string | string[], subject: string, text: string, attachments?: any[]) {
     const formattedAttachments = (attachments || []).map((att: any) => ({
         filename: att.name,
         path: att.url?.startsWith('http') ? att.url : `https://kampungsilatjampang.id${att.url}`,
     }));
 
+    const toList = Array.isArray(to) ? to : String(to || '').split(',').map(s => s.trim()).filter(Boolean);
+
     const payload: any = {
         from: 'Kampung Silat Jampang <mail@kampungsilatjampang.id>',
-        to: [to],
+        to: toList,
         subject,
         text,
     };
@@ -592,7 +623,7 @@ app.post('/admin/mail/reply', async (c) => {
 app.get('/admin/mail/sent', async (c) => {
     const db = c.get('db');
     const { results } = await db
-        .prepare('SELECT * FROM sent_emails ORDER BY sent_at DESC')
+        .prepare('SELECT * FROM sent_emails WHERE COALESCE(is_deleted, 0) = 0 ORDER BY sent_at DESC')
         .all();
     const mapped = (results || []).map((r: any) => ({
         ...r,
@@ -602,22 +633,178 @@ app.get('/admin/mail/sent', async (c) => {
     return c.json({ emails: mapped });
 });
 
+app.put('/admin/mail/sent/:id/toggle-star', async (c) => {
+    const db = c.get('db');
+    const id = c.req.param('id');
+    await db
+        .prepare('UPDATE sent_emails SET is_starred = CASE WHEN is_starred = 1 THEN 0 ELSE 1 END WHERE id = ?')
+        .bind(id)
+        .run();
+    return c.json({ ok: true });
+});
+
+// Soft Delete Sent Email
+app.delete('/admin/mail/sent/:id', async (c) => {
+    const db = c.get('db');
+    const id = c.req.param('id');
+    await db
+        .prepare("UPDATE sent_emails SET is_deleted = 1, deleted_at = datetime('now') WHERE id = ?")
+        .bind(id)
+        .run();
+    return c.json({ ok: true });
+});
+
+// Restore Sent Email from Trash
+app.put('/admin/mail/sent/:id/restore', async (c) => {
+    const db = c.get('db');
+    const id = c.req.param('id');
+    await db
+        .prepare("UPDATE sent_emails SET is_deleted = 0, deleted_at = NULL WHERE id = ?")
+        .bind(id)
+        .run();
+    return c.json({ ok: true });
+});
+
+// Permanently Delete Sent Email
+app.delete('/admin/mail/sent/:id/permanent', async (c) => {
+    const db = c.get('db');
+    const id = c.req.param('id');
+    await db.prepare('DELETE FROM sent_emails WHERE id = ?').bind(id).run();
+    return c.json({ ok: true });
+});
+
+// Trash Mail Endpoints
+app.get('/admin/mail/trash', async (c) => {
+    const db = c.get('db');
+    const [inboxTrash, sentTrash] = await Promise.all([
+        db.prepare("SELECT *, 'inbox' as origin FROM inbox_emails WHERE is_deleted = 1 ORDER BY deleted_at DESC").all(),
+        db.prepare("SELECT *, 'sent' as origin, body as body_text, substr(body, 1, 150) as snippet, sent_at as received_at FROM sent_emails WHERE is_deleted = 1 ORDER BY deleted_at DESC").all(),
+    ]);
+
+    const combined = [...(inboxTrash.results || []), ...(sentTrash.results || [])].sort((a: any, b: any) =>
+        (b.deleted_at || '').localeCompare(a.deleted_at || '')
+    );
+    return c.json({ emails: combined });
+});
+
+app.delete('/admin/mail/trash/empty', async (c) => {
+    const db = c.get('db');
+    await Promise.all([
+        db.prepare('DELETE FROM inbox_emails WHERE is_deleted = 1').run(),
+        db.prepare('DELETE FROM sent_emails WHERE is_deleted = 1').run(),
+    ]);
+    return c.json({ ok: true });
+});
+
+// Mail Drafts Endpoints
+app.get('/admin/mail/drafts', async (c) => {
+    const db = c.get('db');
+    const { results } = await db
+        .prepare('SELECT * FROM mail_drafts ORDER BY updated_at DESC')
+        .all();
+    const mapped = (results || []).map((d: any) => ({
+        ...d,
+        to_recipients: typeof d.to_recipients === 'string' ? JSON.parse(d.to_recipients || '[]') : d.to_recipients,
+        attachments: typeof d.attachments === 'string' ? JSON.parse(d.attachments || '[]') : d.attachments,
+    }));
+    return c.json({ drafts: mapped });
+});
+
+app.post('/admin/mail/drafts', async (c) => {
+    const db = c.get('db');
+    const body = await c.req.json<{ id?: string; toRecipients?: string[]; subject?: string; body?: string; attachments?: any[] }>();
+    const draftId = body.id || `draft-${Date.now()}`;
+    const toRecipientsJson = JSON.stringify(body.toRecipients || []);
+    const attachmentsJson = JSON.stringify(body.attachments || []);
+    const subject = body.subject || '';
+    const bodyContent = body.body || '';
+
+    await db
+        .prepare(`
+            INSERT INTO mail_drafts (id, to_recipients, subject, body, attachments, updated_at)
+            VALUES (?, ?, ?, ?, ?, datetime('now'))
+            ON CONFLICT(id) DO UPDATE SET
+                to_recipients = excluded.to_recipients,
+                subject = excluded.subject,
+                body = excluded.body,
+                attachments = excluded.attachments,
+                updated_at = datetime('now')
+        `)
+        .bind(draftId, toRecipientsJson, subject, bodyContent, attachmentsJson)
+        .run();
+
+    return c.json({ ok: true, draftId });
+});
+
+app.delete('/admin/mail/drafts/:id', async (c) => {
+    const db = c.get('db');
+    const id = c.req.param('id');
+    await db.prepare('DELETE FROM mail_drafts WHERE id = ?').bind(id).run();
+    return c.json({ ok: true });
+});
+
+// Contacts & Autocomplete Endpoints
+app.get('/admin/mail/contacts', async (c) => {
+    const db = c.get('db');
+    const [inboxContacts, sentContacts] = await Promise.all([
+        db.prepare('SELECT DISTINCT from_email, from_name FROM inbox_emails WHERE from_email IS NOT NULL').all(),
+        db.prepare('SELECT DISTINCT to_email FROM sent_emails WHERE to_email IS NOT NULL').all(),
+    ]);
+
+    const contactMap = new Map<string, { email: string; name: string }>();
+
+    (inboxContacts.results || []).forEach((row: any) => {
+        const email = String(row.from_email || '').trim().toLowerCase();
+        if (email && email.includes('@') && !email.includes('kampungsilatjampang.id')) {
+            contactMap.set(email, {
+                email,
+                name: (row.from_name || '').trim() || email.split('@')[0],
+            });
+        }
+    });
+
+    (sentContacts.results || []).forEach((row: any) => {
+        const rawTo = String(row.to_email || '');
+        const emails = rawTo.split(',').map((e) => e.trim().toLowerCase());
+        emails.forEach((email) => {
+            if (email && email.includes('@') && !contactMap.has(email)) {
+                contactMap.set(email, {
+                    email,
+                    name: email.split('@')[0],
+                });
+            }
+        });
+    });
+
+    const contacts = Array.from(contactMap.values()).sort((a, b) => a.email.localeCompare(b.email));
+    return c.json({ contacts });
+});
+
 app.post('/admin/mail/compose', async (c) => {
     const db = c.get('db');
-    const body = await c.req.json<{ to: string; subject: string; body: string; attachments?: any[] }>();
+    const body = await c.req.json<{
+        to: string | string[];
+        subject: string;
+        body: string;
+        attachments?: any[];
+        draftId?: string;
+    }>();
 
-    if (!body.to || !body.subject || !body.body) {
+    const toList = Array.isArray(body.to) ? body.to : String(body.to || '').split(',').map(s => s.trim()).filter(Boolean);
+
+    if (toList.length === 0 || !body.subject || !body.body) {
         return c.json({ error: 'Penerima (To), Subjek, dan Isi pesan wajib diisi' }, 400);
     }
 
     const id = `sent-${Date.now()}`;
     const sentAt = new Date().toISOString();
     const attachmentsJson = JSON.stringify(body.attachments || []);
+    const toEmailStr = toList.join(', ');
 
     // Send via Resend API if available
     const resendKey = (env as any)?.RESEND_API_KEY || (globalThis as any).process?.env?.RESEND_API_KEY;
     if (resendKey) {
-        await sendViaResend(resendKey, body.to.trim(), body.subject.trim(), body.body.trim(), body.attachments);
+        await sendViaResend(resendKey, toList, body.subject.trim(), body.body.trim(), body.attachments);
     }
 
     await db
@@ -625,15 +812,20 @@ app.post('/admin/mail/compose', async (c) => {
             `INSERT INTO sent_emails (id, from_email, to_email, subject, body, attachments, sent_at)
              VALUES (?, 'mail@kampungsilatjampang.id', ?, ?, ?, ?, ?)`
         )
-        .bind(id, body.to.trim(), body.subject.trim(), body.body.trim(), attachmentsJson, sentAt)
+        .bind(id, toEmailStr, body.subject.trim(), body.body.trim(), attachmentsJson, sentAt)
         .run();
+
+    // If sent from a draft, delete the draft
+    if (body.draftId) {
+        await db.prepare('DELETE FROM mail_drafts WHERE id = ?').bind(body.draftId).run();
+    }
 
     return c.json({
         ok: true,
         email: {
             id,
             from_email: 'mail@kampungsilatjampang.id',
-            to_email: body.to.trim(),
+            to_email: toEmailStr,
             subject: body.subject.trim(),
             body: body.body.trim(),
             attachments: body.attachments || [],
