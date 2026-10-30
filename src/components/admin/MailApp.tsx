@@ -12,10 +12,7 @@ import {
     CheckCircle2,
     AlertCircle,
     Clock,
-    User as UserIcon,
     ArrowLeft,
-    ExternalLink,
-    Sparkles,
     Paperclip,
     FileText,
     File,
@@ -392,57 +389,29 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
             )}
 
             {/* Topbar */}
-            <header className="h-16 border-b border-white/10 bg-neutral-900/80 backdrop-blur-md px-4 sm:px-6 flex items-center justify-between shrink-0">
+            <header className="h-14 border-b border-white/10 bg-neutral-950 px-4 sm:px-6 flex items-center justify-between shrink-0">
                 <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
-                        <Mail size={20} />
-                    </div>
-                    <div>
-                        <div className="flex items-center gap-2">
-                            <h1 className="font-display font-bold text-base sm:text-lg text-white">KSJ Webmail</h1>
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
-                                CLOUDFLARE LIVE
-                            </span>
-                        </div>
-                        <p className="text-xs text-neutral-400 hidden sm:block">
-                            Official: <code className="text-amber-400 font-mono">mail@kampungsilatjampang.id</code>
-                        </p>
-                    </div>
+                    <h1 className="font-semibold text-base sm:text-lg text-white tracking-tight">KSJ Webmail</h1>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    {/* Tulis Email Button Header (Mobile only shortcut) */}
+                <div className="flex items-center gap-2">
+                    {/* Tulis Email Button Header (Mobile shortcut) */}
                     <button
                         onClick={() => setIsComposeOpen(true)}
-                        className="md:hidden flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-500 text-neutral-950 font-bold text-xs"
+                        className="md:hidden p-2 rounded-lg text-neutral-400 hover:text-amber-400 hover:bg-white/5 transition-colors"
+                        title="Tulis Email"
+                        aria-label="Tulis Email"
                     >
-                        <PenSquare size={14} />
-                        <span>Tulis</span>
+                        <PenSquare size={18} />
                     </button>
-
-                    <div className="hidden md:flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/5 border border-white/10 text-xs text-neutral-300">
-                        <UserIcon size={14} className="text-amber-400" />
-                        <span>{user.name || user.email}</span>
-                        <span className="px-1.5 py-0.5 text-[10px] bg-amber-500/20 text-amber-300 rounded font-mono">
-                            {user.role}
-                        </span>
-                    </div>
-
-                    <a
-                        href="/"
-                        target="_blank"
-                        className="p-2 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors"
-                        title="Buka Website"
-                    >
-                        <ExternalLink size={18} />
-                    </a>
 
                     <button
                         onClick={onLogout}
-                        className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 border border-red-500/20 text-xs font-medium transition-colors"
+                        title="Keluar"
+                        aria-label="Keluar"
+                        className="p-2 rounded-lg text-neutral-400 hover:text-red-400 hover:bg-red-500/10 transition-colors"
                     >
-                        <LogOut size={14} />
-                        <span className="hidden sm:inline">Keluar</span>
+                        <LogOut size={18} />
                     </button>
                 </div>
             </header>
@@ -450,135 +419,129 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
             {/* Main Content Layout */}
             <div className="flex-1 flex overflow-hidden">
                 {/* Left Sidebar: Compose & Folders */}
-                <aside className="w-60 bg-neutral-900/50 border-r border-white/10 p-3 hidden md:flex flex-col shrink-0 gap-1.5">
-                    {/* Prominent Compose Button */}
+                <aside className="w-56 bg-neutral-950 border-r border-white/10 p-3 hidden md:flex flex-col shrink-0">
+                    {/* Minimalist Compose Button */}
                     <button
                         onClick={() => setIsComposeOpen(true)}
-                        className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-2xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-sm shadow-lg shadow-amber-500/20 transition-all mb-2"
+                        className="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-semibold text-xs transition-colors mb-4 shadow-sm"
                     >
-                        <PenSquare size={18} />
-                        <span>Tulis Email Baru</span>
+                        <PenSquare size={15} />
+                        <span>Tulis Pesan</span>
                     </button>
 
-                    <div className="px-2 pt-2 text-[11px] font-semibold uppercase tracking-wider text-neutral-500">
-                        Kotak Surat
-                    </div>
+                    <nav className="space-y-1">
+                        <button
+                            onClick={() => {
+                                setFilter('all');
+                                setSelectedEmail(null);
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors ${
+                                filter === 'all'
+                                    ? 'bg-white/10 text-white font-medium'
+                                    : 'text-neutral-400 hover:text-neutral-200 hover:bg-white/5'
+                            }`}
+                        >
+                            <div className="flex items-center gap-2.5">
+                                <Inbox size={15} className={filter === 'all' ? 'text-amber-400' : 'text-neutral-400'} />
+                                <span>Kotak Masuk</span>
+                            </div>
+                            {emails.length > 0 && (
+                                <span className={`text-[11px] font-mono ${filter === 'all' ? 'text-neutral-300' : 'text-neutral-500'}`}>
+                                    {emails.length}
+                                </span>
+                            )}
+                        </button>
 
-                    <button
-                        onClick={() => {
-                            setFilter('all');
-                            setSelectedEmail(null);
-                        }}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-colors ${
-                            filter === 'all'
-                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                : 'text-neutral-300 hover:bg-white/5'
-                        }`}
-                    >
-                        <div className="flex items-center gap-2.5">
-                            <Inbox size={16} />
-                            <span>Kotak Masuk</span>
-                        </div>
-                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-white/10 text-neutral-300">
-                            {emails.length}
-                        </span>
-                    </button>
+                        <button
+                            onClick={() => {
+                                setFilter('unread');
+                                setSelectedEmail(null);
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors ${
+                                filter === 'unread'
+                                    ? 'bg-white/10 text-white font-medium'
+                                    : 'text-neutral-400 hover:text-neutral-200 hover:bg-white/5'
+                            }`}
+                        >
+                            <div className="flex items-center gap-2.5">
+                                <Mail size={15} className={filter === 'unread' ? 'text-amber-400' : 'text-neutral-400'} />
+                                <span>Belum Dibaca</span>
+                            </div>
+                            {unreadCount > 0 && (
+                                <span className="text-[10px] px-1.5 py-0.5 rounded-full bg-amber-500 text-neutral-950 font-bold">
+                                    {unreadCount}
+                                </span>
+                            )}
+                        </button>
 
-                    <button
-                        onClick={() => {
-                            setFilter('unread');
-                            setSelectedEmail(null);
-                        }}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-colors ${
-                            filter === 'unread'
-                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                : 'text-neutral-300 hover:bg-white/5'
-                        }`}
-                    >
-                        <div className="flex items-center gap-2.5">
-                            <Mail size={16} />
-                            <span>Belum Dibaca</span>
-                        </div>
-                        {unreadCount > 0 && (
-                            <span className="text-[11px] px-2 py-0.5 rounded-full bg-amber-500 text-neutral-950 font-bold">
-                                {unreadCount}
-                            </span>
-                        )}
-                    </button>
+                        <button
+                            onClick={() => {
+                                setFilter('starred');
+                                setSelectedEmail(null);
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors ${
+                                filter === 'starred'
+                                    ? 'bg-white/10 text-white font-medium'
+                                    : 'text-neutral-400 hover:text-neutral-200 hover:bg-white/5'
+                            }`}
+                        >
+                            <div className="flex items-center gap-2.5">
+                                <Star size={15} className={filter === 'starred' ? 'text-amber-400' : 'text-neutral-400'} />
+                                <span>Berbintang</span>
+                            </div>
+                            {emails.filter((e) => e.is_starred).length > 0 && (
+                                <span className={`text-[11px] font-mono ${filter === 'starred' ? 'text-neutral-300' : 'text-neutral-500'}`}>
+                                    {emails.filter((e) => e.is_starred).length}
+                                </span>
+                            )}
+                        </button>
 
-                    <button
-                        onClick={() => {
-                            setFilter('starred');
-                            setSelectedEmail(null);
-                        }}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-colors ${
-                            filter === 'starred'
-                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                : 'text-neutral-300 hover:bg-white/5'
-                        }`}
-                    >
-                        <div className="flex items-center gap-2.5">
-                            <Star size={16} />
-                            <span>Berbintang</span>
-                        </div>
-                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-white/10 text-neutral-300">
-                            {emails.filter((e) => e.is_starred).length}
-                        </span>
-                    </button>
-
-                    <button
-                        onClick={() => {
-                            setFilter('sent');
-                            setSelectedEmail(null);
-                        }}
-                        className={`w-full flex items-center justify-between px-3 py-2.5 rounded-xl text-xs font-medium transition-colors ${
-                            filter === 'sent'
-                                ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                                : 'text-neutral-300 hover:bg-white/5'
-                        }`}
-                    >
-                        <div className="flex items-center gap-2.5">
-                            <SendHorizonal size={16} />
-                            <span>Pesan Terkirim</span>
-                        </div>
-                        <span className="text-[11px] px-2 py-0.5 rounded-full bg-white/10 text-neutral-300">
-                            {sentEmails.length}
-                        </span>
-                    </button>
-
-                    <div className="mt-auto p-3 rounded-xl bg-gradient-to-br from-amber-500/10 to-amber-900/10 border border-amber-500/20 text-xs text-neutral-300 space-y-2">
-                        <div className="flex items-center gap-1.5 text-amber-400 font-semibold">
-                            <Sparkles size={14} />
-                            <span>Cloudflare R2 Media</span>
-                        </div>
-                        <p className="text-[11px] text-neutral-400 leading-relaxed">
-                            Semua lampiran file email otomatis disimpan secara aman di bucket <strong className="text-white">ksj-media</strong> Cloudflare R2.
-                        </p>
-                    </div>
+                        <button
+                            onClick={() => {
+                                setFilter('sent');
+                                setSelectedEmail(null);
+                            }}
+                            className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs transition-colors ${
+                                filter === 'sent'
+                                    ? 'bg-white/10 text-white font-medium'
+                                    : 'text-neutral-400 hover:text-neutral-200 hover:bg-white/5'
+                            }`}
+                        >
+                            <div className="flex items-center gap-2.5">
+                                <SendHorizonal size={15} className={filter === 'sent' ? 'text-amber-400' : 'text-neutral-400'} />
+                                <span>Terkirim</span>
+                            </div>
+                            {sentEmails.length > 0 && (
+                                <span className={`text-[11px] font-mono ${filter === 'sent' ? 'text-neutral-300' : 'text-neutral-500'}`}>
+                                    {sentEmails.length}
+                                </span>
+                            )}
+                        </button>
+                    </nav>
                 </aside>
 
                 {/* Middle Pane: Email List (Hidden on mobile if email is selected) */}
                 <div
-                    className={`w-full md:w-96 lg:w-[420px] border-r border-white/10 flex flex-col bg-neutral-950 shrink-0 ${
+                    className={`w-full md:w-88 lg:w-96 border-r border-white/10 flex flex-col bg-neutral-950 shrink-0 ${
                         selectedEmail ? 'hidden md:flex' : 'flex'
                     }`}
                 >
                     {/* Search & Actions Bar */}
-                    <div className="p-3 border-b border-white/10 flex items-center gap-2 bg-neutral-900/40">
+                    <div className="p-2.5 border-b border-white/10 flex items-center gap-2 bg-neutral-950">
                         <div className="relative flex-1">
-                            <Search size={15} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-400" />
+                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-neutral-500" />
                             <input
                                 type="text"
-                                placeholder={`Cari di ${filter === 'sent' ? 'pesan terkirim' : 'kotak surat'}...`}
+                                placeholder={`Cari di ${filter === 'sent' ? 'pesan terkirim' : 'kotak masuk'}...`}
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
-                                className="w-full bg-neutral-900 border border-white/10 rounded-xl pl-9 pr-3 py-1.5 text-xs text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-amber-500"
+                                className="w-full bg-neutral-900 border border-white/10 rounded-lg pl-8 pr-3 py-1.5 text-xs text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-amber-500/50"
                             />
                         </div>
                         <button
                             onClick={() => fetchEmails()}
                             disabled={refreshing}
-                            className="p-2 rounded-xl bg-white/5 hover:bg-white/10 text-neutral-300 transition-colors shrink-0"
+                            className="p-1.5 rounded-lg text-neutral-400 hover:text-neutral-200 hover:bg-white/5 transition-colors shrink-0"
                             title="Segarkan Kotak Surat"
                         >
                             <RefreshCw size={15} className={refreshing ? 'animate-spin text-amber-400' : ''} />
@@ -605,12 +568,12 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                                     <div
                                         key={email.id}
                                         onClick={() => openEmail(email)}
-                                        className={`p-3.5 cursor-pointer transition-colors relative flex items-start gap-3 ${
+                                        className={`p-3.5 cursor-pointer transition-colors relative flex items-start gap-3 border-b border-white/[0.04] ${
                                             isSelected
                                                 ? 'bg-amber-500/10 border-l-2 border-amber-500'
                                                 : filter !== 'sent' && !email.is_read
-                                                ? 'bg-neutral-900/60 hover:bg-neutral-900 border-l-2 border-blue-500'
-                                                : 'bg-neutral-950 hover:bg-white/[0.02]'
+                                                ? 'bg-neutral-900/50 hover:bg-neutral-900/80 border-l-2 border-amber-500/60'
+                                                : 'bg-transparent hover:bg-white/[0.02]'
                                         }`}
                                     >
                                         {filter !== 'sent' ? (
@@ -620,26 +583,31 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                                                     email.is_starred ? 'text-amber-400' : 'text-neutral-600 hover:text-neutral-400'
                                                 }`}
                                             >
-                                                <Star size={15} fill={email.is_starred ? 'currentColor' : 'none'} />
+                                                <Star size={14} fill={email.is_starred ? 'currentColor' : 'none'} />
                                             </button>
                                         ) : (
-                                            <SendHorizonal size={15} className="mt-1 text-emerald-400 shrink-0" />
+                                            <SendHorizonal size={14} className="mt-1 text-amber-400/80 shrink-0" />
                                         )}
 
                                         <div className="flex-1 min-w-0">
                                             <div className="flex items-center justify-between gap-2 mb-1">
-                                                <span
-                                                    className={`text-xs truncate ${
-                                                        filter !== 'sent' && !email.is_read
-                                                            ? 'font-bold text-white'
-                                                            : 'font-medium text-neutral-300'
-                                                    }`}
-                                                >
-                                                    {filter === 'sent'
-                                                        ? `Kepada: ${email.to_email}`
-                                                        : email.from_name || email.from_email}
-                                                </span>
-                                                <span className="text-[10px] text-neutral-500 shrink-0">
+                                                <div className="flex items-center gap-1.5 truncate">
+                                                    {filter !== 'sent' && !email.is_read && (
+                                                        <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />
+                                                    )}
+                                                    <span
+                                                        className={`text-xs truncate ${
+                                                            filter !== 'sent' && !email.is_read
+                                                                ? 'font-semibold text-white'
+                                                                : 'font-normal text-neutral-300'
+                                                        }`}
+                                                    >
+                                                        {filter === 'sent'
+                                                            ? `Kepada: ${email.to_email}`
+                                                            : email.from_name || email.from_email}
+                                                    </span>
+                                                </div>
+                                                <span className="text-[10px] text-neutral-500 shrink-0 font-mono">
                                                     {formatDate(email.received_at || email.sent_at)}
                                                 </span>
                                             </div>
@@ -647,21 +615,21 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                                             <div
                                                 className={`text-xs truncate mb-1 ${
                                                     filter !== 'sent' && !email.is_read
-                                                        ? 'font-semibold text-neutral-200'
+                                                        ? 'font-medium text-neutral-200'
                                                         : 'text-neutral-400'
                                                 }`}
                                             >
                                                 {email.subject}
                                             </div>
 
-                                            <p className="text-[11px] text-neutral-500 line-clamp-2 leading-relaxed">
-                                                {email.snippet || email.body_text || email.body || '(Tidak ada teks ringkas)'}
+                                            <p className="text-[11px] text-neutral-500 line-clamp-1 leading-relaxed">
+                                                {email.snippet || email.body_text || email.body || '(Tidak ada teks)'}
                                             </p>
 
                                             {/* Attachment badge */}
                                             {hasAttachments && (
-                                                <div className="mt-2 flex items-center gap-1.5 text-[10px] text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-md w-fit border border-amber-500/20">
-                                                    <Paperclip size={11} />
+                                                <div className="mt-1.5 flex items-center gap-1 text-[10px] text-neutral-400 bg-white/5 px-1.5 py-0.5 rounded border border-white/5 w-fit">
+                                                    <Paperclip size={10} className="text-amber-400" />
                                                     <span>{atts.length} lampiran</span>
                                                 </div>
                                             )}
@@ -735,32 +703,32 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                             </div>
 
                             {/* Message Heading */}
-                            <h2 className="text-lg sm:text-xl font-bold text-white mb-4">
+                            <h2 className="text-base sm:text-lg font-semibold text-white tracking-tight mb-3">
                                 {selectedEmail.subject}
                             </h2>
 
                             {/* Sender / Recipient Card */}
-                            <div className="p-4 rounded-xl bg-neutral-900 border border-white/10 mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                            <div className="p-3.5 rounded-xl bg-neutral-900/60 border border-white/5 mb-5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                                 <div className="flex items-center gap-3">
-                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-amber-500 to-amber-700 text-neutral-950 font-bold flex items-center justify-center text-sm shrink-0">
+                                    <div className="w-9 h-9 rounded-lg bg-amber-500/10 border border-amber-500/20 text-amber-400 font-semibold flex items-center justify-center text-sm shrink-0">
                                         {(selectedEmail.from_name || selectedEmail.from_email || 'K').charAt(0).toUpperCase()}
                                     </div>
                                     <div>
-                                        <div className="text-sm font-semibold text-white">
+                                        <div className="text-xs sm:text-sm font-medium text-white">
                                             {selectedEmail.from_name || selectedEmail.from_email}
                                         </div>
-                                        <div className="text-xs text-neutral-400">
+                                        <div className="text-[11px] text-neutral-400">
                                             Dari: <span className="text-neutral-200">{selectedEmail.from_email}</span>
                                         </div>
                                     </div>
                                 </div>
-                                <div className="text-xs text-neutral-400 text-left sm:text-right">
-                                    Kepada: <span className="text-amber-400 font-mono">{selectedEmail.to_email}</span>
+                                <div className="text-[11px] text-neutral-400 text-left sm:text-right">
+                                    Kepada: <span className="text-neutral-200 font-mono">{selectedEmail.to_email}</span>
                                 </div>
                             </div>
 
                             {/* Message Body */}
-                            <div className="p-6 rounded-2xl bg-neutral-900/60 border border-white/10 text-neutral-200 text-sm leading-relaxed mb-6 whitespace-pre-wrap font-sans">
+                            <div className="p-5 sm:p-6 rounded-xl bg-neutral-900/40 border border-white/5 text-neutral-200 text-sm leading-relaxed mb-5 whitespace-pre-wrap font-sans">
                                 {selectedEmail.body_html ? (
                                     <div
                                         className="prose prose-invert max-w-none text-sm"
@@ -857,24 +825,21 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                             {filter !== 'sent' && (
                                 <form
                                     onSubmit={handleSendReply}
-                                    className="p-4 sm:p-5 rounded-2xl bg-neutral-900 border border-amber-500/30 shadow-lg mt-auto"
+                                    className="p-4 rounded-xl bg-neutral-900/60 border border-white/10 mt-auto"
                                 >
-                                    <div className="flex items-center justify-between mb-3">
-                                        <div className="flex items-center gap-2 text-xs font-semibold text-amber-400">
-                                            <CornerUpLeft size={16} />
-                                            <span>Balas ke: {selectedEmail.from_email}</span>
+                                    <div className="flex items-center justify-between mb-2.5">
+                                        <div className="flex items-center gap-1.5 text-xs font-medium text-neutral-300">
+                                            <CornerUpLeft size={14} className="text-amber-400" />
+                                            <span>Balas ke: <span className="text-white font-mono">{selectedEmail.from_email}</span></span>
                                         </div>
-                                        <span className="text-[11px] text-neutral-500 font-mono">
-                                            From: mail@kampungsilatjampang.id
-                                        </span>
                                     </div>
 
                                     <textarea
-                                        rows={4}
+                                        rows={3}
                                         value={replyText}
                                         onChange={(e) => setReplyText(e.target.value)}
                                         placeholder="Tulis balasan pesan di sini..."
-                                        className="w-full bg-neutral-950 border border-white/10 rounded-xl p-3 text-xs sm:text-sm text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-amber-500 resize-none"
+                                        className="w-full bg-neutral-950 border border-white/10 rounded-lg p-3 text-xs sm:text-sm text-neutral-200 placeholder-neutral-500 focus:outline-none focus:border-amber-500/50 resize-none"
                                         required
                                     />
 
@@ -919,14 +884,14 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                                                 type="button"
                                                 onClick={() => replyFileInputRef.current?.click()}
                                                 disabled={uploadingReplyFile}
-                                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-300 text-xs font-medium border border-white/10 transition-colors"
+                                                className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-300 text-xs font-medium border border-white/10 transition-colors"
                                             >
                                                 {uploadingReplyFile ? (
-                                                    <RefreshCw size={13} className="animate-spin text-amber-400" />
+                                                    <RefreshCw size={12} className="animate-spin text-amber-400" />
                                                 ) : (
-                                                    <Paperclip size={13} className="text-amber-400" />
+                                                    <Paperclip size={12} className="text-amber-400" />
                                                 )}
-                                                <span>{uploadingReplyFile ? 'Mengunggah...' : 'Lampirkan File'}</span>
+                                                <span>{uploadingReplyFile ? 'Mengunggah...' : 'Lampirkan'}</span>
                                             </button>
 
                                             <button
@@ -936,7 +901,7 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                                                         'Terima kasih telah menghubungi Kampung Silat Jampang. Kami telah menerima pesan Anda dan akan segera menindaklanjutinya.'
                                                     )
                                                 }
-                                                className="text-[11px] px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors hidden sm:block"
+                                                className="text-[11px] px-2.5 py-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-400 hover:text-white transition-colors hidden sm:block"
                                             >
                                                 Template Cepat
                                             </button>
@@ -945,16 +910,16 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                                         <button
                                             type="submit"
                                             disabled={sendingReply || !replyText.trim()}
-                                            className="flex items-center justify-center gap-2 px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs sm:text-sm transition-all disabled:opacity-50"
+                                            className="flex items-center justify-center gap-1.5 px-4 py-1.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-neutral-950 font-semibold text-xs transition-colors disabled:opacity-50"
                                         >
                                             {sendingReply ? (
                                                 <>
-                                                    <RefreshCw size={14} className="animate-spin" />
+                                                    <RefreshCw size={13} className="animate-spin" />
                                                     <span>Mengirim...</span>
                                                 </>
                                             ) : (
                                                 <>
-                                                    <Send size={14} />
+                                                    <Send size={13} />
                                                     <span>Kirim Balasan</span>
                                                 </>
                                             )}
@@ -969,84 +934,84 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
 
             {/* COMPOSE EMAIL MODAL */}
             {isComposeOpen && (
-                <div className="fixed inset-0 z-50 bg-black/75 backdrop-blur-sm flex items-center justify-center p-4">
-                    <div className="w-full max-w-2xl bg-neutral-900 border border-white/10 rounded-3xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
+                <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-center justify-center p-4">
+                    <div className="w-full max-w-xl bg-neutral-950 border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]">
                         {/* Modal Header */}
-                        <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-neutral-950">
-                            <div className="flex items-center gap-2.5 text-white font-bold text-base">
-                                <PenSquare size={18} className="text-amber-400" />
-                                <span>Tulis Email Baru</span>
+                        <div className="px-5 py-4 border-b border-white/10 flex items-center justify-between">
+                            <div className="flex items-center gap-2 text-white font-semibold text-sm">
+                                <PenSquare size={16} className="text-amber-400" />
+                                <span>Pesan Baru</span>
                             </div>
                             <button
                                 onClick={() => setIsComposeOpen(false)}
-                                className="p-2 rounded-xl text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+                                className="p-1.5 rounded-lg text-neutral-400 hover:text-white hover:bg-white/5 transition-colors"
                             >
-                                <X size={18} />
+                                <X size={16} />
                             </button>
                         </div>
 
                         {/* Modal Form Body */}
-                        <form onSubmit={handleSendCompose} className="p-5 sm:p-6 space-y-4 flex-1 overflow-y-auto">
+                        <form onSubmit={handleSendCompose} className="p-5 space-y-3.5 flex-1 overflow-y-auto">
                             <div>
-                                <label className="block text-xs font-medium text-neutral-400 mb-1.5">
-                                    Dari (Pengirim Resmi):
+                                <label className="block text-xs font-medium text-neutral-400 mb-1">
+                                    Dari
                                 </label>
                                 <input
                                     type="text"
                                     value="mail@kampungsilatjampang.id"
                                     disabled
-                                    className="w-full bg-neutral-950/50 border border-white/10 rounded-xl px-3.5 py-2 text-xs sm:text-sm text-neutral-400 font-mono"
+                                    className="w-full bg-neutral-900/60 border border-white/10 rounded-lg px-3 py-1.5 text-xs text-neutral-400 font-mono"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium text-neutral-400 mb-1.5">
-                                    Kepada (Email Penerima) <span className="text-amber-400">*</span>:
+                                <label className="block text-xs font-medium text-neutral-400 mb-1">
+                                    Kepada <span className="text-amber-400">*</span>
                                 </label>
                                 <input
                                     type="email"
                                     required
-                                    placeholder="contoh: info@organisasi.com / mitra@gmail.com"
+                                    placeholder="contoh: mitra@gmail.com"
                                     value={composeTo}
                                     onChange={(e) => setComposeTo(e.target.value)}
-                                    className="w-full bg-neutral-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-amber-500"
+                                    className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-xs sm:text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-amber-500/50"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium text-neutral-400 mb-1.5">
-                                    Subjek Email <span className="text-amber-400">*</span>:
+                                <label className="block text-xs font-medium text-neutral-400 mb-1">
+                                    Subjek <span className="text-amber-400">*</span>
                                 </label>
                                 <input
                                     type="text"
                                     required
-                                    placeholder="Judul atau perihal pesan..."
+                                    placeholder="Perihal pesan..."
                                     value={composeSubject}
                                     onChange={(e) => setComposeSubject(e.target.value)}
-                                    className="w-full bg-neutral-950 border border-white/10 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-amber-500"
+                                    className="w-full bg-neutral-900 border border-white/10 rounded-lg px-3 py-2 text-xs sm:text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-amber-500/50"
                                 />
                             </div>
 
                             <div>
-                                <label className="block text-xs font-medium text-neutral-400 mb-1.5">
-                                    Isi Pesan <span className="text-amber-400">*</span>:
+                                <label className="block text-xs font-medium text-neutral-400 mb-1">
+                                    Isi Pesan <span className="text-amber-400">*</span>
                                 </label>
                                 <textarea
-                                    rows={6}
+                                    rows={5}
                                     required
-                                    placeholder="Tuliskan isi surat atau pesan Anda di sini..."
+                                    placeholder="Tuliskan pesan Anda..."
                                     value={composeBody}
                                     onChange={(e) => setComposeBody(e.target.value)}
-                                    className="w-full bg-neutral-950 border border-white/10 rounded-xl p-3.5 text-xs sm:text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-amber-500 resize-none leading-relaxed"
+                                    className="w-full bg-neutral-900 border border-white/10 rounded-lg p-3 text-xs sm:text-sm text-white placeholder-neutral-600 focus:outline-none focus:border-amber-500/50 resize-none leading-relaxed"
                                 />
                             </div>
 
                             {/* Attachments Section */}
                             <div>
-                                <div className="flex items-center justify-between mb-2">
+                                <div className="flex items-center justify-between mb-1.5">
                                     <label className="text-xs font-medium text-neutral-400 flex items-center gap-1.5">
-                                        <Paperclip size={14} className="text-amber-400" />
-                                        <span>Lampiran File:</span>
+                                        <Paperclip size={13} className="text-amber-400" />
+                                        <span>Lampiran File</span>
                                     </label>
                                     <input
                                         type="file"
@@ -1059,26 +1024,26 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                                         type="button"
                                         onClick={() => composeFileInputRef.current?.click()}
                                         disabled={uploadingComposeFile}
-                                        className="text-xs px-3 py-1.5 rounded-lg bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 flex items-center gap-1.5 transition-colors"
+                                        className="text-xs px-2.5 py-1 rounded-lg bg-white/5 hover:bg-white/10 text-neutral-300 border border-white/10 flex items-center gap-1.5 transition-colors"
                                     >
                                         {uploadingComposeFile ? (
-                                            <RefreshCw size={12} className="animate-spin" />
+                                            <RefreshCw size={11} className="animate-spin text-amber-400" />
                                         ) : (
-                                            <Paperclip size={12} />
+                                            <Paperclip size={11} className="text-amber-400" />
                                         )}
                                         <span>{uploadingComposeFile ? 'Mengunggah...' : '+ Pilih File'}</span>
                                     </button>
                                 </div>
 
                                 {composeAttachments.length > 0 ? (
-                                    <div className="space-y-2 mt-2">
+                                    <div className="space-y-1.5 mt-2">
                                         {composeAttachments.map((att, idx) => (
                                             <div
                                                 key={idx}
-                                                className="flex items-center justify-between p-2.5 rounded-xl bg-neutral-950 border border-white/10 text-xs text-neutral-200"
+                                                className="flex items-center justify-between p-2 rounded-lg bg-neutral-900 border border-white/10 text-xs text-neutral-200"
                                             >
                                                 <div className="flex items-center gap-2 min-w-0">
-                                                    <File size={15} className="text-amber-400 shrink-0" />
+                                                    <File size={14} className="text-amber-400 shrink-0" />
                                                     <span className="truncate">{att.name}</span>
                                                     {att.size && (
                                                         <span className="text-[10px] text-neutral-500 shrink-0">
@@ -1095,41 +1060,41 @@ export default function MailApp({ user, onLogout }: { user: User; onLogout: () =
                                                     }
                                                     className="text-neutral-500 hover:text-red-400 p-1"
                                                 >
-                                                    <X size={14} />
+                                                    <X size={13} />
                                                 </button>
                                             </div>
                                         ))}
                                     </div>
                                 ) : (
-                                    <p className="text-[11px] text-neutral-500 italic">
-                                        Belum ada file terlampir. Bisa lampirkan dokumen (PDF, Docx), foto, atau arsip.
+                                    <p className="text-[11px] text-neutral-500">
+                                        Bisa lampirkan dokumen (PDF, Docx), foto, atau arsip.
                                     </p>
                                 )}
                             </div>
 
                             {/* Modal Footer Actions */}
-                            <div className="pt-4 border-t border-white/10 flex items-center justify-end gap-3">
+                            <div className="pt-3 border-t border-white/10 flex items-center justify-end gap-2">
                                 <button
                                     type="button"
                                     onClick={() => setIsComposeOpen(false)}
-                                    className="px-4 py-2.5 rounded-xl text-neutral-400 hover:text-white text-xs font-medium hover:bg-white/5 transition-colors"
+                                    className="px-3.5 py-1.5 rounded-lg text-neutral-400 hover:text-white text-xs font-medium hover:bg-white/5 transition-colors"
                                 >
                                     Batal
                                 </button>
                                 <button
                                     type="submit"
                                     disabled={sendingCompose || uploadingComposeFile}
-                                    className="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-amber-500 hover:bg-amber-400 text-neutral-950 font-bold text-xs sm:text-sm shadow-lg shadow-amber-500/20 transition-all disabled:opacity-50"
+                                    className="flex items-center gap-1.5 px-4 py-2 rounded-lg bg-amber-500 hover:bg-amber-400 text-neutral-950 font-semibold text-xs transition-colors disabled:opacity-50"
                                 >
                                     {sendingCompose ? (
                                         <>
-                                            <RefreshCw size={15} className="animate-spin" />
+                                            <RefreshCw size={13} className="animate-spin" />
                                             <span>Mengirim...</span>
                                         </>
                                     ) : (
                                         <>
-                                            <Send size={15} />
-                                            <span>Kirim Email</span>
+                                            <Send size={13} />
+                                            <span>Kirim Pesan</span>
                                         </>
                                     )}
                                 </button>
