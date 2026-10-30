@@ -704,6 +704,22 @@ app.post('/mail/inbound', async (c) => {
         return c.json({ error: 'Data email tidak valid' }, 400);
     }
 
+    // Filter ketat: Pastikan email memang ditujukan untuk domain @kampungsilatjampang.id
+    // Karena Resend Webhook bersifat account-wide (mencakup semua domain dalam 1 akun Resend)
+    const rawTo = rawBody.data?.to || rawBody.to || toEmail;
+    const toRecipients: string[] = Array.isArray(rawTo) ? rawTo : [String(rawTo || '')];
+    const isTargetKSJ = toRecipients.some((r) => String(r).toLowerCase().includes('kampungsilatjampang.id'));
+
+    if (!isTargetKSJ) {
+        // Return 200 OK agar webhook Resend tidak me-retry, namun jangan simpan ke DB KSJ
+        return c.json({
+            ok: true,
+            ignored: true,
+            reason: 'Email diabaikan karena bukan ditujukan untuk @kampungsilatjampang.id',
+            to: toRecipients,
+        });
+    }
+
     const id = `mail-${Date.now()}-${Math.random().toString(36).substring(2, 7)}`;
     const snippet = bodyText ? bodyText.substring(0, 150) : (subject || '');
     const attachmentsJson = JSON.stringify(attachments);
